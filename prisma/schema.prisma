@@ -11,6 +11,51 @@ datasource db {
 }
 
 model User {
-  id   String @id
-  name String
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  password  String
+  creaedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProfile {
+  id             String @id @default(uuid())
+  userId         String
+  image          String
+  dateOfBirth    String
+  educationId    String
+  maritualStatus String
+  about          String
+  nationality    String
+  location       String
+}
+
+model Education {
+  educationId   String   @id @default(uuid())
+  title         String
+  instituteName String
+  startYear     Int
+  endYear       Int
+  cgpa          Int
+  creaedAt      DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SocialPlatform {
+  platfromId String   @id @default(uuid())
+  name       String
+  image      String
+  creaedAt   DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model PlatformConnection {
+  connectionId String   @id @default(uuid())
+  platformId   String
+  link         String
+  userId       String
+  creaedAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
