@@ -16,7 +16,7 @@ model User {
   lastName  String
   email     String   @unique
   password  String
-  creaedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
@@ -39,7 +39,7 @@ model Education {
   startYear     Int
   endYear       Int
   cgpa          Int
-  creaedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
@@ -47,7 +47,7 @@ model SocialPlatform {
   platfromId String   @id @default(uuid())
   name       String
   image      String
-  creaedAt   DateTime @default(now())
+  createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
 
@@ -56,6 +56,80 @@ model PlatformConnection {
   platformId   String
   link         String
   userId       String
-  creaedAt     DateTime @default(now())
+  createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Experience {
+  experienceId String   @id @default(uuid())
+  companyName  String
+  designation  String
+  startingYear Int
+  present      String
+  endingYear   Int
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Project {
+  projectId    String   @id @default(uuid())
+  designation  String
+  projectLink  String
+  image        String
+  description  String
+  startingYear Int
+  endingYear   Int
+  userId       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  categoryId String   @id @default(uuid())
+  name       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model CategoryConnection {
+  connectionId String   @id @default(uuid())
+  categoryId   String
+  serviceId    String
+  projectId    String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model SubCategory {
+  subCategoryId String   @id @default(uuid())
+  name          String
+  categoryId    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Service {
+  serviceId   String   @id @default(uuid())
+  title       String
+  description String
+  image       String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Skills {
+  skillsId  String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SkillConnection {
+  skillConnectionId String   @id @default(uuid())
+  skillId           String
+  userId            String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
