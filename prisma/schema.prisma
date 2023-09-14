@@ -36,8 +36,8 @@ model Education {
   educationId   String   @id @default(uuid())
   title         String
   instituteName String
-  startYear     Int
-  endYear       Int
+  startDate     DateTime
+  endDate       DateTime
   cgpa          Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -64,25 +64,25 @@ model Experience {
   experienceId String   @id @default(uuid())
   companyName  String
   designation  String
-  startingYear Int
+  startYear    DateTime
   present      String
-  endingYear   Int
+  endYear      DateTime
   userId       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
 
 model Project {
-  projectId    String   @id @default(uuid())
-  designation  String
-  projectLink  String
-  image        String
-  description  String
-  startingYear Int
-  endingYear   Int
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  projectId   String   @id @default(uuid())
+  designation String
+  projectLink String
+  image       String
+  description String
+  startYear   DateTime
+  endYear     DateTime
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {
@@ -132,4 +132,65 @@ model SkillConnection {
   userId            String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+// company
+model Page {
+  pageId      String   @id @default(uuid())
+  userId      String
+  logo        String
+  coverPic    String
+  name        String
+  userName    String
+  bio         String
+  description String
+  locationId  String
+  address     String
+  categoryId  String
+  contactNo   String
+  email       String   @unique
+  follower    String
+  websiteURL  String
+  foundedDate DateTime
+}
+
+model JobPost {
+  postId         String   @id @default(uuid())
+  pageId         String
+  title          String
+  salary         Int
+  description    String
+  responsibility String
+  requirements   String
+  vacancy        String
+  deadline       DateTime
+  categoryId     String
+  extraInfo      String
+}
+
+model Blog {
+  blogId      String   @id @default(uuid())
+  title       String
+  description String
+  image       String
+  pageId      String
+  upVote      String
+  downVote    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Location {
+  locationId String @id @default(uuid())
+  country    String
+  division   String
+  district   String
+}
+
+model Member {
+  memberId    String   @id @default(uuid())
+  email       String   @unique
+  joiningDate DateTime
+  role        String
+  pageId      String
 }
