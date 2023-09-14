@@ -11,125 +11,204 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String        @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String        @unique
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  UserProfile UserProfile[]
 }
 
 model UserProfile {
-  id             String @id @default(uuid())
-  userId         String
-  image          String
-  dateOfBirth    String
-  educationId    String
-  maritualStatus String
-  about          String
-  nationality    String
-  location       String
+  id                 String               @id @default(uuid())
+  userId             String
+  user               User                 @relation(fields: [userId], references: [id])
+  image              String
+  dateOfBirth        String
+  maritualStatus     String
+  about              String
+  nationality        String
+  location           String
+  Education          Education[]
+  PlatformConnection PlatformConnection[]
+  Experience         Experience[]
+  Project            Project[]
+  Service            Service[]
+  SkillConnection    SkillConnection[]
 }
 
 model Education {
-  educationId   String   @id @default(uuid())
+  id            String      @id @default(uuid())
   title         String
+  user          UserProfile @relation(fields: [userId], references: [id])
+  userId        String
   instituteName String
-  startYear     Int
-  endYear       Int
+  startDate     DateTime
+  endDate       DateTime
   cgpa          Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model SocialPlatform {
-  platfromId String   @id @default(uuid())
-  name       String
-  image      String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id                 String               @id @default(uuid())
+  name               String
+  image              String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  PlatformConnection PlatformConnection[]
 }
 
 model PlatformConnection {
-  connectionId String   @id @default(uuid())
-  platformId   String
-  link         String
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String         @id @default(uuid())
+  socialPlatform SocialPlatform @relation(fields: [platformId], references: [id])
+  platformId     String
+  link           String
+  user           UserProfile    @relation(fields: [userId], references: [id])
+  userId         String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Experience {
-  experienceId String   @id @default(uuid())
-  companyName  String
-  designation  String
-  startingYear Int
-  present      String
-  endingYear   Int
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String      @id @default(uuid())
+  companyName String
+  designation String
+  startYear   DateTime
+  present     String
+  endYear     DateTime
+  user        UserProfile @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Project {
-  projectId    String   @id @default(uuid())
-  designation  String
-  projectLink  String
-  image        String
-  description  String
-  startingYear Int
-  endingYear   Int
-  userId       String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String      @id @default(uuid())
+  designation String
+  projectLink String
+  image       String
+  description String
+  startYear   DateTime
+  endYear     DateTime
+  user        UserProfile @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model Category {
-  categoryId String   @id @default(uuid())
-  name       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-}
-
-model CategoryConnection {
-  connectionId String   @id @default(uuid())
-  categoryId   String
-  serviceId    String
-  projectId    String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model SubCategory {
-  subCategoryId String   @id @default(uuid())
-  name          String
-  categoryId    String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model Service {
-  serviceId   String   @id @default(uuid())
-  title       String
-  description String
-  image       String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model Skills {
-  skillsId  String   @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model CategoryConnection {
+  id         String   @id @default(uuid())
+  categoryId String
+  serviceId  String
+  projectId  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model SubCategory {
+  id         String   @id @default(uuid())
+  name       String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Service {
+  id          String      @id @default(uuid())
+  title       String
+  description String
+  image       String
+  user        UserProfile @relation(fields: [userId], references: [id])
+  userId      String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Skills {
+  id              String            @id @default(uuid())
+  name            String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  SkillConnection SkillConnection[]
+}
+
 model SkillConnection {
-  skillConnectionId String   @id @default(uuid())
-  skillId           String
-  userId            String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id        String      @id @default(uuid())
+  skills    Skills      @relation(fields: [skillId], references: [id])
+  skillId   String
+  user      UserProfile @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// company
+model Page {
+  id          String   @id @default(uuid())
+  userId      String
+  logo        String
+  coverPic    String
+  name        String
+  userName    String
+  bio         String
+  description String
+  locationId  String
+  address     String
+  categoryId  String
+  contactNo   String
+  email       String   @unique
+  follower    String
+  websiteURL  String
+  foundedDate DateTime
+}
+
+model JobPost {
+  id             String   @id @default(uuid())
+  pageId         String
+  title          String
+  salary         Int
+  description    String
+  responsibility String
+  requirements   String
+  vacancy        String
+  deadline       DateTime
+  categoryId     String
+  extraInfo      String
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  image       String
+  pageId      String
+  upVote      String
+  downVote    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Location {
+  id       String @id @default(uuid())
+  country  String
+  division String
+  district String
+}
+
+model Member {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  joiningDate DateTime
+  role        String
+  pageId      String
 }
