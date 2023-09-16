@@ -1,29 +1,19 @@
 import express from 'express';
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
-import { UserRouter } from '../module/user/user.route';
 
 const router = express.Router();
 
 const moduleRoutes = [
-  // ... routes
-  // {
-  //   path: "",
-  //   routes: ""
-  // },
   {
     path: '/profile',
-    routes: ProfileRoutes,
+    route: ProfileRoutes,
   },
   {
     path: '/social-platform',
-    routes: SocialPlatformRoutes,
-  },
-  {
-    path: '',
-    routes: '',
+    route: SocialPlatformRoutes,
   },
 ];
 
-moduleRoutes.forEach(route => router.use(route.path, route.routes));
+moduleRoutes.forEach(route => router.use(route.path, route.route));
 export default router;
