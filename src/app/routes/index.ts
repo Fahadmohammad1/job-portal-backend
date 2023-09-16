@@ -16,6 +16,10 @@ const moduleRoutes = [
     routes: ProfileRoutes,
   },
   {
+    path: '/social-platform',
+    routes: SocialPlatformRoutes,
+  },
+  {
     path: '',
     routes: '',
   },
