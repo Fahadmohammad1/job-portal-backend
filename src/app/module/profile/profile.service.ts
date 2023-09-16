@@ -63,7 +63,7 @@ const updateMyProfileIntoDB = async (
     });
 
     // await transactionClient.platformConnection.update({
-    //   where: { userId:  },
+    //   where: { userId: authUserId },
     //   data: data.socialConnection,
     // });
 
@@ -73,8 +73,21 @@ const updateMyProfileIntoDB = async (
   return result;
 };
 
+const getByIdFromDB = async (id: string): Promise<UserProfile | null> => {
+  return await prisma.userProfile.findUnique({
+    where: { userId: id },
+  });
+};
+const deleteByIdFromDB = async (id: string): Promise<UserProfile | null> => {
+  return await prisma.userProfile.delete({
+    where: { userId: id },
+  });
+};
+
 export const ProfileService = {
   insertIntoDB,
   myProfileFromDB,
   updateMyProfileIntoDB,
+  getByIdFromDB,
+  deleteByIdFromDB,
 };
