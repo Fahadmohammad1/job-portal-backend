@@ -6,6 +6,46 @@ import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { Secret } from 'jsonwebtoken';
+import { errorlogger, logger } from '../../../shared/logger';
+import nodemailer from 'nodemailer';
+import randomstring from 'randomstring';
+
+const sendResetPasswordWithMail = (
+  name: string,
+  email: string,
+  token: string
+) => {
+  const transporter = nodemailer.createTransport({
+    host: config.emailHost,
+    port: 25,
+    secure: false,
+    requireTLS: true,
+    auth: {
+      user: config.emailUser,
+      pass: config.emailPassword,
+    },
+  });
+
+  const mailOptions = {
+    from: config.emailUser,
+    to: email,
+    subject: 'Reset your Job-Portal website password',
+    html:
+      '<h3>Dear honorable user ' +
+      name +
+      ',</h3><p>Please click on the following link to <a href ="http://localhost:5000/api/v1/auth/reset-password/?token=' +
+      token +
+      '"> reset your password </a></p>',
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      errorlogger.error('Error sending email:', error);
+    } else {
+      logger.info('Email sent:', info.response);
+    }
+  });
+};
 
 const signup = async (payload: User) => {
   if (payload?.password) {
@@ -34,7 +74,7 @@ const signup = async (payload: User) => {
 
   return {
     result,
-    accessToken
+    accessToken,
   };
 };
 
@@ -88,7 +128,50 @@ const login = async (payload: Partial<User>) => {
   };
 };
 
+const forgetPassword = async (email: string) => {
+  const user = await prisma.user.findFirst({ where: { email: email } });
+
+  if (user) {
+    const resetToken = randomstring.generate();
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        token: resetToken,
+      },
+    });
+    const name = user.firstName + ' ' + user?.lastName;
+    sendResetPasswordWithMail(name, user.email, resetToken);
+  } else {
+    throw new ApiError(httpStatus.NOT_FOUND, "The user doesn't exist");
+  }
+};
+
+const resetPassword = async (token: string | undefined, password: string) => {
+  const isUserExist = await prisma.user.findFirst({ where: { token: token } });
+
+  if (isUserExist) {
+    password = await bcrypt.hash(password, Number(config.bcrypt_salt_rounds));
+    console.log(password);
+
+    await prisma.user.update({
+      where: {
+        id: isUserExist.id,
+      },
+      data: {
+        password: password,
+        token: '',
+      },
+    });
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'This token has been expired');
+  }
+};
+
 export const AuthService = {
   signup,
   login,
+  forgetPassword,
+  resetPassword,
 };
