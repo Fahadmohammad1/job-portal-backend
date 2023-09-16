@@ -11,19 +11,26 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(uuid())
-  firstName   String
-  lastName    String
-  email       String        @unique
-  password    String
-  role        UserRole      @default(USER)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  UserProfile UserProfile[]
+  id                 String               @id @default(uuid())
+  firstName          String
+  lastName           String
+  email              String               @unique
+  password           String
+  role               UserRole             @default(USER)
+  token              String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  Page               Page[]
+  UserProfile        UserProfile[]
+  Education          Education[]
+  PlatformConnection PlatformConnection[]
+  Experience         Experience[]
+  Project            Project[]
+  Service            Service[]
+  SkillConnection    SkillConnection[]
 }
 
 model UserProfile {
-  id                 String               @id @default(uuid())
   userId             String
   user               User                 @relation(fields: [userId], references: [id])
   image              String
@@ -38,19 +45,23 @@ model UserProfile {
   Project            Project[]
   Service            Service[]
   SkillConnection    SkillConnection[]
+
+  @@id([userId])
 }
 
 model Education {
-  id            String      @id @default(uuid())
-  title         String
-  user          UserProfile @relation(fields: [userId], references: [id])
-  userId        String
-  instituteName String
-  startDate     DateTime
-  endDate       DateTime
-  cgpa          Int
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id                String       @id @default(uuid())
+  title             String
+  user              User         @relation(fields: [userId], references: [id])
+  userId            String
+  instituteName     String
+  startDate         DateTime
+  endDate           DateTime
+  cgpa              Int
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  UserProfile       UserProfile? @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId String?
 }
 
 model SocialPlatform {
@@ -63,54 +74,64 @@ model SocialPlatform {
 }
 
 model PlatformConnection {
-  id             String         @id @default(uuid())
-  socialPlatform SocialPlatform @relation(fields: [platformId], references: [id])
-  platformId     String
-  link           String
-  user           UserProfile    @relation(fields: [userId], references: [id])
-  userId         String
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                String         @id @default(uuid())
+  socialPlatform    SocialPlatform @relation(fields: [platformId], references: [id])
+  platformId        String
+  link              String
+  user              User           @relation(fields: [userId], references: [id])
+  userId            String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  UserProfile       UserProfile?   @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId String?
 }
 
 model Experience {
-  id          String      @id @default(uuid())
-  companyName String
-  designation String
-  startYear   DateTime
-  present     String
-  endYear     DateTime
-  user        UserProfile @relation(fields: [userId], references: [id])
-  userId      String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id                String       @id @default(uuid())
+  companyName       String
+  designation       String
+  startYear         DateTime
+  present           String
+  endYear           DateTime
+  user              User         @relation(fields: [userId], references: [id])
+  userId            String
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  UserProfile       UserProfile? @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId String?
 }
 
 model Project {
-  id          String      @id @default(uuid())
-  designation String
-  projectLink String
-  image       String
-  description String
-  startYear   DateTime
-  endYear     DateTime
-  user        UserProfile @relation(fields: [userId], references: [id])
-  userId      String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id                 String               @id @default(uuid())
+  designation        String
+  projectLink        String
+  image              String
+  description        String
+  startYear          DateTime
+  endYear            DateTime
+  user               User                 @relation(fields: [userId], references: [id])
+  userId             String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  CategoryConnection CategoryConnection[]
+  UserProfile        UserProfile?         @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId  String?
 }
 
 model Category {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  JobPost   JobPost[]
 }
 
 model CategoryConnection {
   id         String   @id @default(uuid())
   categoryId String
+  service    Service  @relation(fields: [serviceId], references: [id])
   serviceId  String
+  project    Project  @relation(fields: [projectId], references: [id])
   projectId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -125,14 +146,17 @@ model SubCategory {
 }
 
 model Service {
-  id          String      @id @default(uuid())
-  title       String
-  description String
-  image       String
-  user        UserProfile @relation(fields: [userId], references: [id])
-  userId      String
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id                 String               @id @default(uuid())
+  title              String
+  description        String
+  image              String
+  user               User                 @relation(fields: [userId], references: [id])
+  userId             String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  CategoryConnection CategoryConnection[]
+  UserProfile        UserProfile?         @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId  String?
 }
 
 model Skills {
@@ -144,18 +168,21 @@ model Skills {
 }
 
 model SkillConnection {
-  id        String      @id @default(uuid())
-  skills    Skills      @relation(fields: [skillId], references: [id])
-  skillId   String
-  user      UserProfile @relation(fields: [userId], references: [id])
-  userId    String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id                String       @id @default(uuid())
+  skills            Skills       @relation(fields: [skillId], references: [id])
+  skillId           String
+  user              User         @relation(fields: [userId], references: [id])
+  userId            String
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  UserProfile       UserProfile? @relation(fields: [userProfileUserId], references: [userId])
+  userProfileUserId String?
 }
 
 // company
 model Page {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
   userId      String
   logo        String
   coverPic    String
@@ -165,16 +192,18 @@ model Page {
   description String
   locationId  String
   address     String
-  categoryId  String
   contactNo   String
-  email       String   @unique
+  email       String    @unique
   follower    String
   websiteURL  String
   foundedDate DateTime
+  JobPost     JobPost[]
+  Blog        Blog[]
 }
 
 model JobPost {
   id             String   @id @default(uuid())
+  page           Page     @relation(fields: [pageId], references: [id])
   pageId         String
   title          String
   salary         Int
@@ -183,6 +212,7 @@ model JobPost {
   requirements   String
   vacancy        String
   deadline       DateTime
+  category       Category @relation(fields: [categoryId], references: [id])
   categoryId     String
   extraInfo      String
 }
@@ -192,6 +222,7 @@ model Blog {
   title       String
   description String
   image       String
+  page        Page     @relation(fields: [pageId], references: [id])
   pageId      String
   upVote      String
   downVote    String
