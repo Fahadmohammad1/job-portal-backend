@@ -36,7 +36,7 @@ const forgetPassword = z.object({
   }),
 });
 
-export const UserValidation = {
+export const AuthValidation = {
   signup,
   login,
   forgetPassword,
