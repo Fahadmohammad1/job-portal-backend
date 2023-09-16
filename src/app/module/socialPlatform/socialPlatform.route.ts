@@ -1,11 +1,20 @@
 import express from 'express';
+import validateRequest from '../../middlewares/validateRequest';
 import { SocialPlatformController } from './socialPlatform.controller';
+import { SocialPlatformValidation } from './socialPlatfrom.validation';
 const router = express.Router();
-
+router.post(
+  '/',
+  validateRequest(SocialPlatformValidation.update),
+  SocialPlatformController.insertIntoDB
+);
 router.get('/:id', SocialPlatformController.getByIdFromDB);
-router.patch('/:id', SocialPlatformController.updateByIdIntoDB);
+router.patch(
+  '/:id',
+  validateRequest(SocialPlatformValidation.update),
+  SocialPlatformController.updateByIdIntoDB
+);
 router.delete('/:id', SocialPlatformController.deleteByIdFromDB);
 router.get('/', SocialPlatformController.getAllFromDB);
-router.post('/', SocialPlatformController.insertIntoDB);
 
 export const SocialPlatformRoutes = router;
