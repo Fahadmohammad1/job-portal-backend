@@ -11,6 +11,9 @@ const insertIntoDB = async (
     data.profile.userId = authUserId;
     const profile = await transactionClient.userProfile.create({
       data: data.profile,
+      include: {
+        PlatformConnection: true,
+      },
     });
     data.socialConnection.userId = authUserId;
     await transactionClient.platformConnection.create({
@@ -29,6 +32,14 @@ const myProfileFromDB = async (
     where: {
       userId: authUserId,
     },
+    include: {
+      PlatformConnection: true,
+      Experience: true,
+      Education: true,
+      Project: true,
+      Service: true,
+      SkillConnection: true,
+    },
   });
 };
 const updateMyProfileIntoDB = async (
@@ -39,9 +50,7 @@ const updateMyProfileIntoDB = async (
     where: {
       userId: authUserId,
     },
-    incloud: {
-      user,
-    },
+    include: {},
   });
   if (!user) {
     throw new ApiError(404, 'User Not Found!');
@@ -51,14 +60,13 @@ const updateMyProfileIntoDB = async (
       where: { userId: authUserId },
       data: data.profile,
     });
-    //  await transactionClient.platformConnection.update({
-    //  where:{
-    //   userId: authUserId,
-    //  },
-    //  data: data.socialConnection
-    //  })
 
-    return updateMyProfileIntoDB;
+    // await transactionClient.platformConnection.update({
+    //   where: { userId:  },
+    //   data: data.socialConnection,
+    // });
+
+    return updatedProfile;
   });
 
   return result;
