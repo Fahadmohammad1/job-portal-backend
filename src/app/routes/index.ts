@@ -1,8 +1,9 @@
 import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
+import { PageRoutes } from '../module/company/page/page.route';
+import { JobPostRouter } from '../module/job/job.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
-import { JobPostRouter } from '../module/job/job.route';
 
 const router = express.Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: '/job-post',
     route: JobPostRouter,
+  },
+  {
+    path: '/page',
+    route: PageRoutes,
   },
 ];
 
