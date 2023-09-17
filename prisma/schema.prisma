@@ -28,6 +28,7 @@ model User {
   Project            Project[]
   Service            Service[]
   SkillConnection    SkillConnection[]
+  JobPost            JobPost[]
 }
 
 model UserProfile {
@@ -203,10 +204,11 @@ model Page {
 
 model JobPost {
   id             String   @id @default(uuid())
-  page           Page     @relation(fields: [pageId], references: [id])
-  pageId         String
+  userId         String?
+  pageId         String?
   title          String
-  salary         Int
+  minSalary      Int
+  maxSalary      Int
   description    String
   responsibility String
   requirements   String
@@ -215,6 +217,8 @@ model JobPost {
   category       Category @relation(fields: [categoryId], references: [id])
   categoryId     String
   extraInfo      String
+  user           User?    @relation(fields: [userId], references: [id])
+  page           Page?    @relation(fields: [pageId], references: [id])
 }
 
 model Blog {
