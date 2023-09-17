@@ -187,7 +187,7 @@ model Page {
   userId      String
   logo        String
   coverPic    String
-  name        String
+  title       String    @unique
   userName    String
   bio         String
   description String
