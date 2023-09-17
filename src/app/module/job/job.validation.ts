@@ -23,12 +23,13 @@ const createJobPost = z.object({
     vacancy: z.string({
       required_error: 'Vacancy is required',
     }),
-    deadline: z.date({
+    deadline: z.string({
       required_error: 'Deadline is required',
     }),
     categoryId: z.string({
       required_error: 'Category id is required',
     }),
+    extraInfo: z.string().optional(),
   }),
 });
 
@@ -44,6 +45,7 @@ const updateJobPost = z.object({
     vacancy: z.string().optional(),
     deadline: z.date().optional(),
     categoryId: z.string().optional(),
+    extraInfo: z.string().optional(),
   }),
 });
 
