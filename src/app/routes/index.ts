@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
+import { PageRoutes } from '../module/company/page/page.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
 
@@ -17,6 +18,10 @@ const moduleRoutes = [
   {
     path: '/social-platform',
     route: SocialPlatformRoutes,
+  },
+  {
+    path: '/page',
+    route: PageRoutes,
   },
 ];
 
