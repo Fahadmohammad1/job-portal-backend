@@ -1,6 +1,7 @@
 import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
+import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
 
 const router = express.Router();
@@ -17,6 +18,10 @@ const moduleRoutes = [
   {
     path: '/social-platform',
     route: SocialPlatformRoutes,
+  },
+  {
+    path: '/skills',
+    route: SkillsRoutes,
   },
 ];
 

@@ -1,6 +1,12 @@
-import { PlatformConnection, UserProfile } from '@prisma/client';
+import { Education, Experience, UserProfile } from '@prisma/client';
 
 export type IProfileUserRequest = {
   profile: UserProfile;
-  socialConnection: PlatformConnection;
+  education: Education[];
+  experience: Experience[];
+  skillConnection: {
+    skillId: string;
+    userId?: string;
+    userProfileUserId?: string;
+  }[];
 };

@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { ProfileService } from './profile.service';
+import { ProfileService } from './profile.services';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const user = (req as any).user;
+  const user = (req as JwtPayload).user;
+  console.log(req.body);
   const result = await ProfileService.insertIntoDB(req.body, user.userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -14,19 +16,29 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await ProfileService.getAllFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Profile fetched successfully',
+    data: result,
+  });
+});
 const myProfileFromDB = catchAsync(async (req: Request, res: Response) => {
-  const user = (req as any).user;
+  const user = (req as JwtPayload).user;
+  console.log(user);
   const result = await ProfileService.myProfileFromDB(user.userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Profile fetch successfully',
+    message: 'Profile fetched successfully',
     data: result,
   });
 });
 const updateMyProfileIntoDB = catchAsync(
   async (req: Request, res: Response) => {
-    const user = (req as any).user;
+    const user = (req as JwtPayload).user;
     const result = await ProfileService.updateMyProfileIntoDB(
       user.userId,
       user.userId
@@ -34,7 +46,7 @@ const updateMyProfileIntoDB = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Profile update successfully',
+      message: 'Profile updated successfully',
       data: result,
     });
   }
@@ -44,7 +56,7 @@ const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Profile fetch successfully',
+    message: 'Profile fetched successfully',
     data: result,
   });
 });
@@ -53,7 +65,7 @@ const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Profile delete successfully',
+    message: 'Profile deleted successfully',
     data: result,
   });
 });
@@ -64,4 +76,5 @@ export const ProfileController = {
   updateMyProfileIntoDB,
   deleteByIdFromDB,
   getByIdFromDB,
+  getAllFromDB,
 };
