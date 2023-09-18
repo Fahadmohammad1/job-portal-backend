@@ -3,6 +3,7 @@ import { AuthRouter } from '../module/auth/auth.route';
 import { PageRoutes } from '../module/company/page/page.route';
 import { JobPostRouter } from '../module/job/job.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
+import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
 
 const router = express.Router();
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: '/page',
     route: PageRoutes,
+  },
+  {
+    path: '/skills',
+    route: SkillsRoutes,
   },
 ];
 
