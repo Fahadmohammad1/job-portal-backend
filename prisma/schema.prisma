@@ -185,18 +185,18 @@ model Page {
   id          String    @id @default(uuid())
   user        User      @relation(fields: [userId], references: [id])
   userId      String
-  logo        String
-  coverPic    String
+  logo        String?
+  coverPic    String?
   title       String    @unique
   userName    String
-  bio         String
+  bio         String?
   description String
   locationId  String
   address     String
   contactNo   String
   email       String    @unique
-  follower    String
-  websiteURL  String
+  follower    String    @default("0")
+  websiteURL  String?
   foundedDate DateTime
   JobPost     JobPost[]
   Blog        Blog[]
