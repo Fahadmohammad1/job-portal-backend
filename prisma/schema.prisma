@@ -190,6 +190,7 @@ model Page {
   title       String    @unique
   bio         String?
   description String
+  location    Location  @relation(fields: [locationId], references: [id])
   locationId  String
   address     String
   contactNo   String
@@ -242,6 +243,7 @@ model Location {
   country  String
   division String
   district String
+  Page     Page[]
 }
 
 model Member {
