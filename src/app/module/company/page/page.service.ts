@@ -1,5 +1,6 @@
 import { Page } from '@prisma/client';
 import httpStatus from 'http-status';
+import { JwtPayload } from 'jsonwebtoken';
 import ApiError from '../../../../errors/ApiError';
 import { prisma } from '../../../../shared/prisma';
 
@@ -47,7 +48,8 @@ const getSinglePage = async (title: string): Promise<Page | null> => {
 
 const updatePage = async (
   pageId: string,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
+  user: JwtPayload
 ): Promise<Page | null> => {
   const pageExist = await prisma.page.findUnique({
     where: {
@@ -57,6 +59,10 @@ const updatePage = async (
 
   if (!pageExist) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Page does not exist!');
+  }
+
+  if (pageExist.userId !== user.userId) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden Access');
   }
 
   const result = await prisma.page.update({
@@ -69,7 +75,24 @@ const updatePage = async (
   return result;
 };
 
-const deletePage = async (pageId: string): Promise<Page | null> => {
+const deletePage = async (
+  pageId: string,
+  user: JwtPayload
+): Promise<Page | null> => {
+  const pageExist = await prisma.page.findUnique({
+    where: {
+      id: pageId,
+    },
+  });
+
+  if (!pageExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Page does not exist!');
+  }
+
+  if (pageExist.userId !== user.userId) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden Access');
+  }
+
   return await prisma.page.delete({
     where: {
       id: pageId,

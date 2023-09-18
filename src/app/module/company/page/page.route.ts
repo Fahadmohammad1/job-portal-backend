@@ -18,8 +18,17 @@ router.post(
   PageController.createPage
 );
 
-router.patch('/:id', PageController.updatePage);
+router.patch(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.USER),
+  validateRequest(PageValidation.updatePage),
+  PageController.updatePage
+);
 
-router.delete('/:id', PageController.deletePage);
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.USER),
+  PageController.deletePage
+);
 
 export const PageRoutes = router;

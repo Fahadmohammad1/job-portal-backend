@@ -30,6 +30,23 @@ const createPage = z.object({
   }),
 });
 
+const updatePage = z.object({
+  body: z.object({
+    logo: z.string().optional(),
+    coverPic: z.string().optional(),
+    title: z.string().optional(),
+    bio: z.string().optional(),
+    description: z.string().optional(),
+    locationId: z.string().optional(),
+    address: z.string().optional(),
+    contactNo: z.string().optional(),
+    email: z.string().optional(),
+    websiteURL: z.string().optional(),
+    foundedDate: z.string().optional(),
+  }),
+});
+
 export const PageValidation = {
   createPage,
+  updatePage,
 };

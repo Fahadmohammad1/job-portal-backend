@@ -175,19 +175,20 @@ CREATE TABLE "SkillConnection" (
 CREATE TABLE "Page" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "logo" TEXT NOT NULL,
-    "coverPic" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "userName" TEXT NOT NULL,
-    "bio" TEXT NOT NULL,
+    "logo" TEXT,
+    "coverPic" TEXT,
+    "title" TEXT NOT NULL,
+    "bio" TEXT,
     "description" TEXT NOT NULL,
     "locationId" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "contactNo" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "follower" TEXT NOT NULL,
-    "websiteURL" TEXT NOT NULL,
+    "follower" TEXT NOT NULL DEFAULT '0',
+    "websiteURL" TEXT,
     "foundedDate" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Page_pkey" PRIMARY KEY ("id")
 );
@@ -207,6 +208,8 @@ CREATE TABLE "JobPost" (
     "deadline" TIMESTAMP(3) NOT NULL,
     "categoryId" TEXT NOT NULL,
     "extraInfo" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "JobPost_pkey" PRIMARY KEY ("id")
 );
@@ -249,6 +252,9 @@ CREATE TABLE "Member" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Page_title_key" ON "Page"("title");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Page_email_key" ON "Page"("email");
