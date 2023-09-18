@@ -5,7 +5,7 @@ import { SocialPlatformValidation } from './socialPlatfrom.validation';
 const router = express.Router();
 router.post(
   '/',
-  validateRequest(SocialPlatformValidation.update),
+  validateRequest(SocialPlatformValidation.create),
   SocialPlatformController.insertIntoDB
 );
 router.get('/:id', SocialPlatformController.getByIdFromDB);

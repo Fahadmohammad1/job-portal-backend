@@ -41,7 +41,7 @@ const updateMyProfileIntoDB = catchAsync(
     const user = (req as JwtPayload).user;
     const result = await ProfileService.updateMyProfileIntoDB(
       user.userId,
-      user.userId
+      req.body
     );
     sendResponse(res, {
       statusCode: httpStatus.OK,

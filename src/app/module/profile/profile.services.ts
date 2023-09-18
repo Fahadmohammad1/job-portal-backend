@@ -8,7 +8,7 @@ const insertIntoDB = async (
   data: IProfileUserRequest,
   authUserId: string
 ): Promise<UserProfile> => {
-  const { education, skillConnection, experience, profile } = data;
+  const { education, profile } = data;
   const user = await prisma.user.findFirst({
     where: {
       id: authUserId,
@@ -25,43 +25,12 @@ const insertIntoDB = async (
         PlatformConnection: true,
       },
     });
-    for (let i = 0; i < education?.length; i++) {
-      await transactionClient.education.create({
-        data: {
-          title: education[i].title,
-          userId: authUserId,
-          instituteName: education[i].instituteName,
-          startDate: education[i].startDate,
-          endDate: education[i].endDate,
-          cgpa: education[i].cgpa,
-          userProfileUserId: userProfile.userId,
-        },
-      });
-    }
 
-    for (let i = 0; i < experience?.length; i++) {
-      await transactionClient.experience.create({
-        data: {
-          companyName: experience[i].companyName,
-          endYear: experience[i].endYear,
-          designation: experience[i].designation,
-          startYear: experience[i].startYear,
-          userId: authUserId,
-          present: experience[i].present,
-          userProfileUserId: userProfile.userId,
-        },
-      });
-    }
-
-    for (let i = 0; i < skillConnection?.length; i++) {
-      await transactionClient.skillConnection.create({
-        data: {
-          userId: authUserId,
-          userProfileUserId: profile?.userId,
-          skillId: skillConnection[i].skillId,
-        },
-      });
-    }
+    education.userId = authUserId;
+    education.userProfileUserId = authUserId;
+    await transactionClient.education.create({
+      data: education,
+    });
 
     return userProfile;
   });
@@ -98,30 +67,45 @@ const myProfileFromDB = async (
     },
   });
 };
-//--------------
+
 const updateMyProfileIntoDB = async (
   authUserId: string,
-  data: IProfileUserRequest
-): Promise<UserProfile | null> => {
-  const user = await prisma.userProfile.findFirst({
+  data: Partial<IProfileUserRequest>
+): Promise<{ message: string }> => {
+  const { profile, education } = data;
+
+  const user = await prisma.user.findFirst({
     where: {
-      userId: authUserId,
+      id: authUserId,
     },
-    include: {},
+    include: {
+      UserProfile: true,
+    },
   });
   if (!user) {
     throw new ApiError(404, 'User Not Found!');
   }
-  const result = await prisma.$transaction(async transactionClient => {
-    const updatedProfile = await transactionClient.userProfile.update({
-      where: { userId: authUserId },
-      data: data.profile,
-    });
 
-    return updatedProfile;
+  await prisma.$transaction(async transactionClient => {
+    if (profile) {
+      await transactionClient.userProfile.update({
+        where: { userId: authUserId },
+        data: profile,
+      });
+    }
+    if (education) {
+      await transactionClient.education.update({
+        where: {
+          id: education.id,
+        },
+        data: education,
+      });
+    }
   });
 
-  return result;
+  return {
+    message: 'profile updated',
+  };
 };
 
 const getByIdFromDB = async (id: string): Promise<UserProfile | null> => {
