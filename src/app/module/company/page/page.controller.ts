@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../../../../shared/catchAsync';
 import sendResponse from '../../../../shared/sendResponse';
 import { PageService } from './page.service';
@@ -40,7 +41,8 @@ const getSinglePage = catchAsync(async (req: Request, res: Response) => {
 
 const updatePage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await PageService.updatePage(id, req.body);
+  const user = req.user as JwtPayload;
+  const result = await PageService.updatePage(id, req.body, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -52,7 +54,8 @@ const updatePage = catchAsync(async (req: Request, res: Response) => {
 
 const deletePage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await PageService.deletePage(id);
+  const user = req.user as JwtPayload;
+  const result = await PageService.deletePage(id, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
