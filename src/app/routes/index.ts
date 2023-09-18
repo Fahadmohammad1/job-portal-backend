@@ -21,7 +21,7 @@ const moduleRoutes = [
     route: SocialPlatformRoutes,
   },
   {
-    path: '/job-post',
+    path: '/job-posts',
     route: JobPostRouter,
   },
   {
