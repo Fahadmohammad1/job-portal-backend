@@ -106,7 +106,6 @@ const deleteJobPost = async (
   }
 };
 
-
 const deleteExpiredJobPosts = async() => {
   const expiredJobPosts = await prisma.jobPost.findMany({
     where: {
