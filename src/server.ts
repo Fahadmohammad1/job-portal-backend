@@ -2,6 +2,7 @@ import { Server } from 'http';
 import app from './app';
 import config from './config';
 import { errorlogger, logger } from './shared/logger';
+import { JobPostService } from './app/module/job/job.services';
 
 // bootstrap function
 async function bootstrap() {
@@ -32,6 +33,8 @@ async function bootstrap() {
       server.close();
     }
   });
+
+  await JobPostService.deleteExpiredJobPosts();
 }
 
 bootstrap();

@@ -5,6 +5,7 @@ import { JobPostRouter } from '../module/job/job.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
+import { CategoryRouter } from '../module/category/category.route';
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ const moduleRoutes = [
     route: SocialPlatformRoutes,
   },
   {
-    path: '/job-post',
+    path: '/job-posts',
     route: JobPostRouter,
   },
   {
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: '/skills',
     route: SkillsRoutes,
+  },
+  {
+    path: '/categories',
+    route: CategoryRouter,
   },
 ];
 
