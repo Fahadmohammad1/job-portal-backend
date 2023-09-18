@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
+import { CategoryRouter } from '../module/category/category.route';
 import { PageRoutes } from '../module/company/page/page.route';
 import { ExperienceRoutes } from '../module/experience/experience.route';
 import { JobPostRouter } from '../module/job/job.route';
@@ -7,7 +8,6 @@ import { PlatformConnectionRoutes } from '../module/platformConnection/platformC
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
-import { ProjectRoutes } from '../module/project/project.route';
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ const moduleRoutes = [
     route: SocialPlatformRoutes,
   },
   {
-    path: '/job-post',
+    path: '/job-posts',
     route: JobPostRouter,
   },
   {
@@ -37,12 +37,12 @@ const moduleRoutes = [
     route: SkillsRoutes,
   },
   {
-    path: '/experience',
-    route: ExperienceRoutes,
+    path: '/categories',
+    route: CategoryRouter,
   },
   {
-    path: '/project',
-    route: ProjectRoutes,
+    path: '/experience',
+    route: ExperienceRoutes,
   },
   {
     path: '/platformConnection',

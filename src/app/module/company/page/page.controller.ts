@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../../../../shared/catchAsync';
 import sendResponse from '../../../../shared/sendResponse';
 import { PageService } from './page.service';
+import pick from '../../../../shared/pick';
+import { pageFilterableFields } from './page.constant';
 
 const createPage = catchAsync(async (req: Request, res: Response) => {
   const result = await PageService.createPage(req.body);
@@ -16,13 +19,16 @@ const createPage = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllPage = catchAsync(async (req: Request, res: Response) => {
-  const result = await PageService.getAllPage();
+  const filters = pick(req.query, pageFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+  const result = await PageService.getAllPage(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Pages fetched successfully!',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
@@ -40,7 +46,8 @@ const getSinglePage = catchAsync(async (req: Request, res: Response) => {
 
 const updatePage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await PageService.updatePage(id, req.body);
+  const user = req.user as JwtPayload;
+  const result = await PageService.updatePage(id, req.body, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -52,7 +59,8 @@ const updatePage = catchAsync(async (req: Request, res: Response) => {
 
 const deletePage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await PageService.deletePage(id);
+  const user = req.user as JwtPayload;
+  const result = await PageService.deletePage(id, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
