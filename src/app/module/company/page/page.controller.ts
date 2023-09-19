@@ -4,6 +4,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import catchAsync from '../../../../shared/catchAsync';
 import sendResponse from '../../../../shared/sendResponse';
 import { PageService } from './page.service';
+import pick from '../../../../shared/pick';
+import { pageFilterableFields } from './page.constant';
 
 const createPage = catchAsync(async (req: Request, res: Response) => {
   const result = await PageService.createPage(req.body);
@@ -17,13 +19,16 @@ const createPage = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllPage = catchAsync(async (req: Request, res: Response) => {
-  const result = await PageService.getAllPage();
+  const filters = pick(req.query, pageFilterableFields);
+  const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+  const result = await PageService.getAllPage(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Pages fetched successfully!',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 
