@@ -44,7 +44,15 @@ This is a Job portal for apply and hire the user for the globally. Their has 3 t
 
 
 
-
+<h3>Job post:</h3>
+<ul>
+    <li><a href="http://localhost:5000/api/v1/job-posts/">Create job post by user</a></li>
+    <li><a href="http://localhost:5000/api/v1/job-posts/:id">Create job post on page</a></li>
+    <li><a href="http://localhost:5000/api/v1/job-posts/">get All job post</a></li>
+    <li><a href="http://localhost:5000/api/v1/job-posts/:id">Get single job post</a></li>
+    <li><a href="http://localhost:5000/api/v1/job-posts/:id">Update Job post</a></li>
+    <li><a href="http://localhost:5000/api/v1/job-posts/:id">Delete Job post</a></li>
+</ul>
 
 
 <h3>Category:</h3>
@@ -57,6 +65,14 @@ This is a Job portal for apply and hire the user for the globally. Their has 3 t
 
 </ul>
 
+<h3>Sub Category:</h3>
+<ul>
+    <li><a href="http://localhost:5000/api/v1/sub-categories/">Create Sub Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/sub-categories/">Get all Sub Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/sub-categories/:id">Get single sub Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/sub-categories/:id">Update sub Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/sub-categories/:id">Delete sub Category</a></li>
+</ul>
 
 
 
