@@ -1,8 +1,12 @@
-import { UserProfile } from '@prisma/client';
+import { Prisma, UserProfile } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IGenericResponse } from '../../../interfaces/common';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import { prisma } from '../../../shared/prisma';
-import { IProfileUserRequest } from './profile.interface';
+import { profileSearchableFields } from './profile.constant';
+import { IProfileFilter, IProfileUserRequest } from './profile.interface';
 
 const insertIntoDB = async (
   data: IProfileUserRequest,
@@ -38,8 +42,40 @@ const insertIntoDB = async (
   return result;
 };
 
-const getAllFromDB = async (): Promise<UserProfile[]> => {
-  return await prisma.userProfile.findMany({
+const getAllFromDB = async (
+  filter: IProfileFilter,
+  options: IPaginationOptions
+): Promise<IGenericResponse<UserProfile[]>> => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filtersData } = filter;
+
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: profileSearchableFields.map(filed => ({
+        [filed]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      AND: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.UserProfileWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.userProfile.findMany({
+    skip,
+    take: limit,
+    where: whereConditions,
     include: {
       PlatformConnection: true,
       Experience: true,
@@ -48,7 +84,23 @@ const getAllFromDB = async (): Promise<UserProfile[]> => {
       Service: true,
       SkillConnection: true,
     },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
   });
+  const total = await prisma.userProfile.count({ where: whereConditions });
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
 const myProfileFromDB = async (
   authUserId: string

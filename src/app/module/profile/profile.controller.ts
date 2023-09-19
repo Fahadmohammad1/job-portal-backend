@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import { paginationFields } from '../../../constants/pagination';
 import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { profileFilterableFields } from './profile.constant';
 import { ProfileService } from './profile.services';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
@@ -17,12 +20,15 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await ProfileService.getAllFromDB();
+  const filter = pick(req.query, profileFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await ProfileService.getAllFromDB(filter, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Profile fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const myProfileFromDB = catchAsync(async (req: Request, res: Response) => {

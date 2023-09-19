@@ -3,6 +3,9 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { SkillsService } from './skill.services';
+import pick from '../../../shared/pick';
+import { skillFilterableFields } from './skill.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 const insertSkillsIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await SkillsService.insertSkillsIntoDB(req.body);
@@ -14,12 +17,15 @@ const insertSkillsIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SkillsService.getAllFromDB();
+  const filter = pick(req.query, skillFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await SkillsService.getAllFromDB(filter, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Skill fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {

@@ -7,7 +7,7 @@ import { PlatformConnectionService } from './PlatformConnection.services';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const user = (req as JwtPayload).user;
-  const result = await PlatformConnectionService.insertIntoDB(
+  const result = await PlatformConnectionService.insertPlatformConnectionIntoDB(
     req.body,
     user.userId
   );
@@ -19,7 +19,8 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await PlatformConnectionService.getAllFromDB();
+  const result =
+    await PlatformConnectionService.getAllPlatformConnectionFromDB();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -28,7 +29,10 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await PlatformConnectionService.getByIdFromDB(req.params.id);
+  const result =
+    await PlatformConnectionService.getPlatformConnectionByIdFromDB(
+      req.params.id
+    );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -37,9 +41,10 @@ const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await PlatformConnectionService.deleteByIdFromDB(
-    req.params.id
-  );
+  const result =
+    await PlatformConnectionService.deletePlatformConnectionByIdFromDB(
+      req.params.id
+    );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -48,10 +53,11 @@ const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const updateByIdIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await PlatformConnectionService.updateByIdIntoDB(
-    req.params.id,
-    req.body
-  );
+  const result =
+    await PlatformConnectionService.updatePlatformConnectionByIdIntoDB(
+      req.params.id,
+      req.body
+    );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

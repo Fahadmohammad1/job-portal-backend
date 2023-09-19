@@ -1,7 +1,12 @@
-import { Skills } from '@prisma/client';
+import { Prisma, Skills } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IGenericResponse } from '../../../interfaces/common';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import { prisma } from '../../../shared/prisma';
+import { skillSearchableFields } from './skill.constant';
+import { ISkillFilter } from './skill.interface';
 
 const insertSkillsIntoDB = async (data: Skills): Promise<Skills> => {
   const isExist = await prisma.skills.findFirst({
@@ -20,8 +25,55 @@ const insertSkillsIntoDB = async (data: Skills): Promise<Skills> => {
   });
 };
 
-const getAllFromDB = async (): Promise<Skills[]> => {
-  return await prisma.skills.findMany({});
+const getAllFromDB = async (
+  filter: ISkillFilter,
+  options: IPaginationOptions
+): Promise<IGenericResponse<Skills[]>> => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filtersData } = filter;
+
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: skillSearchableFields.map(filed => ({
+        [filed]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      AND: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+  const whereConditions: Prisma.SkillsWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+  const result = await prisma.skills.findMany({
+    skip,
+    take: limit,
+    where: whereConditions,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
+  });
+
+  const total = await prisma.skills.count({ where: whereConditions });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
 const getByIdFromDB = async (id: string): Promise<Skills | null> => {
   return await prisma.skills.findFirst({ where: { id } });

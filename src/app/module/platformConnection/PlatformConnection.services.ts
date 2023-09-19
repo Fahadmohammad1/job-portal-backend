@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import { prisma } from '../../../shared/prisma';
 
-const insertIntoDB = async (
+const insertPlatformConnectionIntoDB = async (
   data: PlatformConnection,
   authUserId: string
 ): Promise<PlatformConnection> => {
@@ -23,20 +23,22 @@ const insertIntoDB = async (
   });
 };
 
-const getAllFromDB = async (): Promise<PlatformConnection[]> => {
+const getAllPlatformConnectionFromDB = async (): Promise<
+  PlatformConnection[]
+> => {
   return await prisma.platformConnection.findMany({});
 };
-const getByIdFromDB = async (
+const getPlatformConnectionByIdFromDB = async (
   id: string
 ): Promise<PlatformConnection | null> => {
   return await prisma.platformConnection.findFirst({ where: { id } });
 };
-const deleteByIdFromDB = async (
+const deletePlatformConnectionByIdFromDB = async (
   id: string
 ): Promise<PlatformConnection | null> => {
   return await prisma.platformConnection.delete({ where: { id } });
 };
-const updateByIdIntoDB = async (
+const updatePlatformConnectionByIdIntoDB = async (
   id: string,
   data: Partial<PlatformConnection>
 ): Promise<PlatformConnection> => {
@@ -44,9 +46,9 @@ const updateByIdIntoDB = async (
 };
 
 export const PlatformConnectionService = {
-  insertIntoDB,
-  getAllFromDB,
-  getByIdFromDB,
-  deleteByIdFromDB,
-  updateByIdIntoDB,
+  insertPlatformConnectionIntoDB,
+  getAllPlatformConnectionFromDB,
+  deletePlatformConnectionByIdFromDB,
+  updatePlatformConnectionByIdIntoDB,
+  getPlatformConnectionByIdFromDB,
 };

@@ -3,6 +3,9 @@ import httpStatus from 'http-status';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { SocialPlatformService } from './socialPlatform.services';
+import pick from '../../../shared/pick';
+import { socialPlatformFilterableFields } from './socialPlatform.constant';
+import { paginationFields } from '../../../constants/pagination';
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await SocialPlatformService.insertIntoDB(req.body);
@@ -14,12 +17,15 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SocialPlatformService.getAllFromDB();
+  const filter = pick(req.query, socialPlatformFilterableFields);
+  const options = pick(req.query, paginationFields);
+  const result = await SocialPlatformService.getAllFromDB(filter, options);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,
     message: 'Social platform fetched successfully',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
