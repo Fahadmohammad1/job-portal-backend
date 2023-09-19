@@ -36,6 +36,33 @@ This is a Job portal for apply and hire the user for the globally. Their has 3 t
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+<h3>Category:</h3>
+<ul>
+    <li><a href="http://localhost:5000/api/v1/categories/">Create Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/categories/">Get all Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/categories/:id">Get single Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/categories/:id">Update Category</a></li>
+    <li><a href="http://localhost:5000/api/v1/categories/:id">Delete Category</a></li>
+
+</ul>
+
+
+
+
+
+
+
 <h2>Team members</h2>
 <div style="display: flex; gap:15px">
     <a href="https://github.com/Fahadmohammad1"><img width="50" style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/96826833?v=4" /></a>
