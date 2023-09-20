@@ -6,6 +6,7 @@ import { ProfileRoutes } from '../module/profile/profile.route';
 import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
 import { CategoryRouter } from '../module/category/category.route';
+import { SubCategoryRouter } from '../module/subCategory/subCategory.route';
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: CategoryRouter,
+  },
+  {
+    path: '/sub-categories',
+    route: SubCategoryRouter,
   },
 ];
 
