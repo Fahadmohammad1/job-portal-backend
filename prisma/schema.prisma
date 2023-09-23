@@ -120,11 +120,12 @@ model Project {
 }
 
 model Category {
-  id        String    @id @default(uuid())
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  JobPost   JobPost[]
+  id          String        @id @default(uuid())
+  name        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  JobPost     JobPost[]
+  SubCategory SubCategory[]
 }
 
 model CategoryConnection {
@@ -142,6 +143,7 @@ model SubCategory {
   id         String   @id @default(uuid())
   name       String
   categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
@@ -205,24 +207,31 @@ model Page {
 }
 
 model JobPost {
-  id             String   @id @default(uuid())
-  userId         String?
-  pageId         String?
-  title          String
-  minSalary      Int
-  maxSalary      Int
-  description    String
-  responsibility String
-  requirements   String
-  vacancy        String
-  deadline       DateTime
-  category       Category @relation(fields: [categoryId], references: [id])
-  categoryId     String
-  extraInfo      String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  user           User?    @relation(fields: [userId], references: [id])
-  page           Page?    @relation(fields: [pageId], references: [id])
+  id                    String          @id @default(uuid())
+  userId                String?
+  pageId                String?
+  title                 String
+  minSalary             Int
+  maxSalary             Int
+  salaryType            SalaryType      @default(Monthly)
+  currency              String
+  workEnvironment       WorkEnvoirement @default(Onsite)
+  experienceLevel       ExperienceLevel @default(Junior)
+  jobType               JobType         @default(FullTime)
+  minimumExperienceYear String
+  maximumExperienceYear String
+  description           String
+  responsibility        String
+  requirements          String
+  vacancy               String
+  deadline              DateTime
+  category              Category        @relation(fields: [categoryId], references: [id])
+  categoryId            String
+  extraInfo             String
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  user                  User?           @relation(fields: [userId], references: [id])
+  page                  Page?           @relation(fields: [pageId], references: [id])
 }
 
 model Blog {
@@ -257,4 +266,29 @@ model Member {
 enum UserRole {
   SUPER_ADMIN
   USER
+}
+
+enum WorkEnvoirement {
+  Remote
+  Onsite
+  Hybrid
+  Relocate
+}
+
+enum ExperienceLevel {
+  Internship
+  Junior
+  MidSenior
+  Senior
+}
+
+enum JobType {
+  FullTime
+  PartTime
+  Contract
+}
+
+enum SalaryType {
+  Monthly
+  Yearly
 }

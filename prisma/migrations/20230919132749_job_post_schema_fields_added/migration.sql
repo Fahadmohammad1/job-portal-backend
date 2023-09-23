@@ -1,6 +1,18 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('SUPER_ADMIN', 'USER');
 
+-- CreateEnum
+CREATE TYPE "WorkEnvoirement" AS ENUM ('Remote', 'Onsite', 'Hybrid');
+
+-- CreateEnum
+CREATE TYPE "ExperienceLevel" AS ENUM ('Internship', 'Junior', 'MidSenior', 'Senior');
+
+-- CreateEnum
+CREATE TYPE "JobType" AS ENUM ('FullTime', 'PartTime', 'Contract');
+
+-- CreateEnum
+CREATE TYPE "SalaryType" AS ENUM ('Monthly', 'Yearly');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -201,6 +213,13 @@ CREATE TABLE "JobPost" (
     "title" TEXT NOT NULL,
     "minSalary" INTEGER NOT NULL,
     "maxSalary" INTEGER NOT NULL,
+    "salaryType" "SalaryType" NOT NULL DEFAULT 'Monthly',
+    "currency" TEXT NOT NULL,
+    "workEnvoirement" "WorkEnvoirement" NOT NULL DEFAULT 'Onsite',
+    "experienceLevel" "ExperienceLevel" NOT NULL DEFAULT 'Junior',
+    "jobType" "JobType" NOT NULL DEFAULT 'FullTime',
+    "minimumExperienceYear" TEXT NOT NULL,
+    "maximumExperienceYear" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "responsibility" TEXT NOT NULL,
     "requirements" TEXT NOT NULL,

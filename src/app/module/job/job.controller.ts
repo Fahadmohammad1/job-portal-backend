@@ -5,6 +5,9 @@ import { JobPostService } from './job.services';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 import { JwtPayload } from 'jsonwebtoken';
+import pick from '../../../shared/pick';
+import { paginationFields } from '../../../constants/pagination';
+import { jobPostFilterableField } from './job.constant';
 
 const createJobPostFromUser = catchAsync(
   async (req: Request, res: Response) => {
@@ -40,13 +43,16 @@ const createJobPostFromPage = catchAsync(
 );
 
 const getAllJobPost = catchAsync(async (req: Request, res: Response) => {
-  const result = await JobPostService.getAllJobPost();
+  const filters = pick(req.query, jobPostFilterableField)
+  const options = pick(req.query, paginationFields)
+  const result = await JobPostService.getAllJobPost(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Job posts retrieved successfully!',
-    data: result,
+    meta: result.meta,
+    data: result.data,
   });
 });
 

@@ -11,6 +11,15 @@ const createJobPost = z.object({
     maxSalary: z.number({
       required_error: 'Maximum salary is required',
     }),
+    currency: z.string({
+      required_error: 'Currency salary is required',
+    }),
+    minimumExperienceYear: z.string({
+      required_error: 'Minimum experience year is required',
+    }),
+    maximumExperienceYear: z.string({
+      required_error: 'Maximum experience year is required',
+    }),
     description: z.string({
       required_error: 'Description is required',
     }),
@@ -33,12 +42,14 @@ const createJobPost = z.object({
   }),
 });
 
-
 const updateJobPost = z.object({
   body: z.object({
     title: z.string().optional(),
     minSalary: z.number().optional(),
     maxSalary: z.number().optional(),
+    currency: z.string().optional(),
+    minimumExperienceYear: z.string().optional(),
+    maximumExperienceYear: z.string().optional(),
     description: z.string().optional(),
     responsibility: z.string().optional(),
     requirements: z.string().optional(),
@@ -49,9 +60,7 @@ const updateJobPost = z.object({
   }),
 });
 
-
-
 export const JobPostValidation = {
-    createJobPost,
-    updateJobPost
-}
+  createJobPost,
+  updateJobPost,
+};
