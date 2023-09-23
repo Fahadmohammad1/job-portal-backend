@@ -1,6 +1,7 @@
 import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
 import { CategoryRouter } from '../module/category/category.route';
+import { LocationRoutes } from '../module/company/location/location.route';
 import { PageRoutes } from '../module/company/page/page.route';
 import { ExperienceRoutes } from '../module/experience/experience.route';
 import { JobPostRouter } from '../module/job/job.route';
@@ -62,6 +63,10 @@ const moduleRoutes = [
   {
     path: '/service',
     route: ServiceRoutes,
+  },
+  {
+    path: '/location',
+    route: LocationRoutes,
   },
 ];
 
