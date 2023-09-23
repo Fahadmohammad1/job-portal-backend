@@ -7,6 +7,7 @@ import { JobPostRouter } from '../module/job/job.route';
 import { PlatformConnectionRoutes } from '../module/platformConnection/platformConnection.route';
 import { ProfileRoutes } from '../module/profile/profile.route';
 import { ProjectRoutes } from '../module/project/project.route';
+import { ServiceRoutes } from '../module/service/service.route';
 import { SkillsRoutes } from '../module/skills/skills.route';
 import { SocialPlatformRoutes } from '../module/socialPlatform/socialPlatform.route';
 import { SubCategoryRouter } from '../module/subCategory/subCategory.route';
@@ -57,6 +58,10 @@ const moduleRoutes = [
   {
     path: '/platformConnection',
     route: PlatformConnectionRoutes,
+  },
+  {
+    path: '/service',
+    route: ServiceRoutes,
   },
 ];
 
