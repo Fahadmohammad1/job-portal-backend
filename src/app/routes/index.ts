@@ -2,6 +2,7 @@ import express from 'express';
 import { AuthRouter } from '../module/auth/auth.route';
 import { CategoryRouter } from '../module/category/category.route';
 import { LocationRoutes } from '../module/company/location/location.route';
+import { MemberRoutes } from '../module/company/member/member.route';
 import { PageRoutes } from '../module/company/page/page.route';
 import { ExperienceRoutes } from '../module/experience/experience.route';
 import { JobPostRouter } from '../module/job/job.route';
@@ -67,6 +68,10 @@ const moduleRoutes = [
   {
     path: '/location',
     route: LocationRoutes,
+  },
+  {
+    path: '/member',
+    route: MemberRoutes,
   },
 ];
 
