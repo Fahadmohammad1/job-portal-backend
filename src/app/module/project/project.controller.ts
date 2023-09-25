@@ -1,63 +1,65 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import catchAsync from '../../../shared/catchAsync';
-import sendResponse from '../../../shared/sendResponse';
-import { SkillsService } from './skill.services';
-import pick from '../../../shared/pick';
-import { skillFilterableFields } from './skill.constant';
+import { JwtPayload } from 'jsonwebtoken';
 import { paginationFields } from '../../../constants/pagination';
+import catchAsync from '../../../shared/catchAsync';
+import pick from '../../../shared/pick';
+import sendResponse from '../../../shared/sendResponse';
+import { projectFilterableFields } from './project.constant';
+import { ProjectService } from './project.services';
 
-const insertSkillsIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SkillsService.insertSkillsIntoDB(req.body);
+const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+  const user = (req as JwtPayload).user;
+  const result = await ProjectService.insertIntoDB(req.body, user.userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Skill created successfully',
+    message: 'Project created successfully',
     data: result,
   });
 });
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, skillFilterableFields);
+  const filter = pick(req.query, projectFilterableFields);
   const options = pick(req.query, paginationFields);
-  const result = await SkillsService.getAllFromDB(filter, options);
+  const result = await ProjectService.getAllFromDB(filter, options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Skill fetched successfully',
+    message: 'Project fetched successfully',
     meta: result.meta,
     data: result.data,
   });
 });
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SkillsService.getByIdFromDB(req.params.id);
+  const result = await ProjectService.getByIdFromDB(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Skill fetched successfully',
+    message: 'Project fetched successfully',
     data: result,
   });
 });
 const deleteByIdFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SkillsService.deleteByIdFromDB(req.params.id);
+  const result = await ProjectService.deleteByIdFromDB(req.params.id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Skill deleted successfully',
+    message: 'Project deleted successfully',
     data: result,
   });
 });
 const updateByIdIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await SkillsService.updateByIdIntoDB(req.params.id, req.body);
+  const result = await ProjectService.updateByIdIntoDB(req.params.id, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Skill updated successfully',
+    message: 'Project updated successfully',
     data: result,
   });
 });
 
-export const SkillsController = {
-  insertSkillsIntoDB,
+export const ProjectController = {
+  insertIntoDB,
   getAllFromDB,
   getByIdFromDB,
   updateByIdIntoDB,

@@ -1,14 +1,18 @@
-import { UserProfile } from '@prisma/client';
+import { Prisma, UserProfile } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
+import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IGenericResponse } from '../../../interfaces/common';
+import { IPaginationOptions } from '../../../interfaces/pagination';
 import { prisma } from '../../../shared/prisma';
-import { IProfileUserRequest } from './profile.interface';
+import { profileSearchableFields } from './profile.constant';
+import { IProfileFilter, IProfileUserRequest } from './profile.interface';
 
 const insertIntoDB = async (
   data: IProfileUserRequest,
   authUserId: string
 ): Promise<UserProfile> => {
-  const { education, skillConnection, experience, profile } = data;
+  const { education, profile } = data;
   const user = await prisma.user.findFirst({
     where: {
       id: authUserId,
@@ -25,43 +29,12 @@ const insertIntoDB = async (
         PlatformConnection: true,
       },
     });
-    for (let i = 0; i < education?.length; i++) {
-      await transactionClient.education.create({
-        data: {
-          title: education[i].title,
-          userId: authUserId,
-          instituteName: education[i].instituteName,
-          startDate: education[i].startDate,
-          endDate: education[i].endDate,
-          cgpa: education[i].cgpa,
-          userProfileUserId: userProfile.userId,
-        },
-      });
-    }
 
-    for (let i = 0; i < experience?.length; i++) {
-      await transactionClient.experience.create({
-        data: {
-          companyName: experience[i].companyName,
-          endYear: experience[i].endYear,
-          designation: experience[i].designation,
-          startYear: experience[i].startYear,
-          userId: authUserId,
-          present: experience[i].present,
-          userProfileUserId: userProfile.userId,
-        },
-      });
-    }
-
-    for (let i = 0; i < skillConnection?.length; i++) {
-      await transactionClient.skillConnection.create({
-        data: {
-          userId: authUserId,
-          userProfileUserId: profile?.userId,
-          skillId: skillConnection[i].skillId,
-        },
-      });
-    }
+    education.userId = authUserId;
+    education.userProfileUserId = authUserId;
+    await transactionClient.education.create({
+      data: education,
+    });
 
     return userProfile;
   });
@@ -69,8 +42,40 @@ const insertIntoDB = async (
   return result;
 };
 
-const getAllFromDB = async (): Promise<UserProfile[]> => {
-  return await prisma.userProfile.findMany({
+const getAllFromDB = async (
+  filter: IProfileFilter,
+  options: IPaginationOptions
+): Promise<IGenericResponse<UserProfile[]>> => {
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filtersData } = filter;
+
+  const andConditions = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      OR: profileSearchableFields.map(filed => ({
+        [filed]: {
+          contains: searchTerm,
+          mode: 'insensitive',
+        },
+      })),
+    });
+  }
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      AND: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.UserProfileWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.userProfile.findMany({
+    skip,
+    take: limit,
+    where: whereConditions,
     include: {
       PlatformConnection: true,
       Experience: true,
@@ -79,7 +84,23 @@ const getAllFromDB = async (): Promise<UserProfile[]> => {
       Service: true,
       SkillConnection: true,
     },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: 'desc',
+          },
   });
+  const total = await prisma.userProfile.count({ where: whereConditions });
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
 };
 const myProfileFromDB = async (
   authUserId: string
@@ -98,30 +119,45 @@ const myProfileFromDB = async (
     },
   });
 };
-//--------------
+
 const updateMyProfileIntoDB = async (
   authUserId: string,
-  data: IProfileUserRequest
-): Promise<UserProfile | null> => {
-  const user = await prisma.userProfile.findFirst({
+  data: Partial<IProfileUserRequest>
+): Promise<{ message: string }> => {
+  const { profile, education } = data;
+
+  const user = await prisma.user.findFirst({
     where: {
-      userId: authUserId,
+      id: authUserId,
     },
-    include: {},
+    include: {
+      UserProfile: true,
+    },
   });
   if (!user) {
     throw new ApiError(404, 'User Not Found!');
   }
-  const result = await prisma.$transaction(async transactionClient => {
-    const updatedProfile = await transactionClient.userProfile.update({
-      where: { userId: authUserId },
-      data: data.profile,
-    });
 
-    return updatedProfile;
+  await prisma.$transaction(async transactionClient => {
+    if (profile) {
+      await transactionClient.userProfile.update({
+        where: { userId: authUserId },
+        data: profile,
+      });
+    }
+    if (education) {
+      await transactionClient.education.update({
+        where: {
+          id: education.id,
+        },
+        data: education,
+      });
+    }
   });
 
-  return result;
+  return {
+    message: 'profile updated',
+  };
 };
 
 const getByIdFromDB = async (id: string): Promise<UserProfile | null> => {
