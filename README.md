@@ -1,9 +1,8 @@
 <h1 align="center">Job portal website</h1>
 
-
 <h2>Description</h2>
 
-This is a Job portal for apply and hire the user for the globally. Their has 3 type of hiring and applying process. 
+This is a Job portal for apply and hire the user for the globally. Their has 3 type of hiring and applying process.
 
 - Freelancing / contact base.
 - Remotely hire.
@@ -28,13 +27,14 @@ This is a Job portal for apply and hire the user for the globally. Their has 3 t
     <li><a href="http://localhost:5000/api/v1/auth/reset-password">Reset-password - It works when you send a mail on your mail box with hit the forget password</a></li>
 </ul>
 
-
-
-
-
-
-
-
+<h3>Page : </h3>
+<ul>
+    <li><a href="http://localhost:5000/api/v1/page/create-page">Create Page</a></li>
+    <li><a href="http://localhost:5000/api/v1/page/id">Fetch Single Page</a></li>
+    <li><a href="http://localhost:5000/api/v1/page?searchTerm='page title'&title=company name"></a>Fetch All Pages</li>
+    <li><a href="http://localhost:5000/api/v1/page/id">Update Page Info</a></li>
+    <li><a href="http://localhost:5000/api/v1/page/id">Delete Page</a></li>
+</ul>
 
 <h2>Team members</h2>
 <div style="display: flex; gap:15px">
